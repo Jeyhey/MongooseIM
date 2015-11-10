@@ -234,7 +234,7 @@ check_digest(Digest, DigestGen, Password, Passwd) ->
 -spec set_password(User :: ejabberd:user(),
                    Server :: ejabberd:server(),
                    Password :: binary()
-                  ) -> ok | {error, empty_password | not_allowed | invalid_jid| user_not_exists}.
+                  ) -> ok | {error, empty_password | not_allowed | invalid_jid| user_does_not_exist}.
 set_password(_User, _Server, "") ->
     %% We do not allow empty password
     {error, empty_password};
