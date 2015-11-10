@@ -117,16 +117,17 @@ check_password(User, Host, Password) ->
                     {incorrect, io_lib:format("Password '~s' for user ~s@~s is incorrect", [Password, User, Host])}
             end;
         false ->
-            {not_exists, io_lib:format("Password '~s' for user ~s@~s is incorrect because the account does not exist", [Password, User, Host])}
+            {user_does_not_exist, io_lib:format("Password '~s' for user ~s@~s is incorrect because this user does not
+            exist", [Password, User, Host])}
     end.
 
 -spec check_account(ejabberd:user(), ejabberd:server()) -> {'ok', string()}.
 check_account(User, Host) ->
     case ejabberd_auth:is_user_exists(User, Host) of
         true ->
-            {ok, io_lib:format("Account ~s@~s exists", [User, Host])};
+            {ok, io_lib:format("User ~s@~s exists", [User, Host])};
         false ->
-            {not_exists, io_lib:format("Account ~s@~s does not exist", [User, Host])}
+            {user_does_not_exist, io_lib:format("User ~s@~s does not exist", [User, Host])}
     end.
 
 

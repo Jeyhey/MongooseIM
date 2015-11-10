@@ -241,22 +241,22 @@ set_password(_User, _Server, "") ->
 set_password(User, Server, Password) ->
     LUser = jlib:nodeprep(User),
     LServer = jlib:nodeprep(Server),
-    do_set_password(LUser, LServer, Password).
+    case is_user_exists(LUser, LServer) of
+        true ->
+            do_set_password(LUser, LServer, Password);
+        false ->
+            {error, user_does_not_exist}
+    end.
 
 do_set_password(LUser, LServer, _) when LUser =:= error; LServer =:= error ->
     {error, invalid_jid};
 do_set_password(LUser, LServer, Password) ->
-    case is_user_exists(LUser, LServer) of
-        true ->
-            lists:foldl(
-                fun(M, {error, _}) ->
-                    M:set_password(LUser, LServer, Password);
-                   (_M, Res) ->
-                       Res
-                end, {error, not_allowed}, auth_modules(LServer));
-        false ->
-            {error, user_not_exists}
-    end.
+    lists:foldl(
+        fun(M, {error, _}) ->
+            M:set_password(LUser, LServer, Password);
+           (_M, Res) ->
+               Res
+        end, {error, not_allowed}, auth_modules(LServer)).
 
 
 

@@ -69,8 +69,8 @@ set_last(User, Server, Timestamp, Status) ->
             Module:Fun(jlib:nodeprep(User), jlib:nameprep(Server), Timestamp, Status),
             {ok, io_lib:format("Last activity for user ~s@~s is set as ~B with status ~s", [User, Server, Timestamp, Status])};
         false ->
-            String = io_lib:format("User ~s@~s not exists", [User, Server]),
-            {user_not_exists, String}
+            String = io_lib:format("User ~s@~s does not exist", [User, Server]),
+            {user_does_not_exist, String}
     end.
 
 

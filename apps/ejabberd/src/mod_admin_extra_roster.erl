@@ -167,18 +167,23 @@ add_rosteritem(LocalUser, LocalServer, User, Server, Nick, Group, Subs) ->
         true ->
             case subscribe(LocalUser, LocalServer, User, Server, Nick, Group, Subs, []) of
                 {atomic, ok} ->
-                    case lists:member(Subs, possible_subs_binary()) of
-                        true ->
-                            push_roster_item(LocalUser, LocalServer, User, Server, {add, Nick, Subs, Group}),
-                            {ok, io_lib:format("Added the item to roster of ~s@~s", [LocalUser, LocalServer])};
-                        false ->
-                            {bad_subs, io_lib:format("Sub ~s is incorrect. Choose one of the following:~nnone~nfrom~nto~nboth", [binary_to_list(Subs)])}
-                    end;
+                    do_add_rosteritem(LocalUser, LocalServer, User, Server, Nick, Group, Subs);
                 Other ->
                     {error, io_lib:format("~p", [Other])}
             end;
         false ->
-            {user_not_exists, io_lib:format("Cannot add the item because user ~s@~s not exists", [LocalUser, LocalServer])}
+            {user_does_not_exist, io_lib:format("Cannot add the item because user ~s@~s does not exist",
+                                                [LocalUser, LocalServer])}
+    end.
+
+do_add_rosteritem(LocalUser, LocalServer, User, Server, Nick, Group, Subs) ->
+    case lists:member(Subs, possible_subs_binary()) of
+        true ->
+            push_roster_item(LocalUser, LocalServer, User, Server, {add, Nick, Subs, Group}),
+            {ok, io_lib:format("Added the item to the roster of ~s@~s", [LocalUser, LocalServer])};
+        false ->
+            {bad_subs, io_lib:format("Sub ~s is incorrect. Choose one of the following:~nnone~nfrom~nto~nboth",
+                                     [binary_to_list(Subs)])}
     end.
 
 
@@ -223,7 +228,8 @@ delete_rosteritem(LocalUser, LocalServer, User, Server) ->
                     {error, io_lib:format("~p", [Other])}
             end;
         false ->
-            {user_not_exists, io_lib:format("Cannot delete the item because user ~s@~s not exists", [LocalUser, LocalServer])}
+            {user_does_not_exist, io_lib:format("Cannot delete the item because user ~s@~s doest not exist",
+                                                [LocalUser, LocalServer])}
     end.
 
 

@@ -162,11 +162,11 @@ send_stanza_c2s(Username, Host, Resource, Stanza) ->
     C2sPid = ejabberd_sm:get_session_pid(Username, Host, Resource),
     case C2sPid of
         none ->
-            {bad_jid, io_lib:format("User ~s@~s/~s does not exist",[Username, Host, Resource])};
+            {user_does_not_exist, io_lib:format("User ~s@~s/~s does not exist",[Username, Host, Resource])};
         _ ->
             case exml:parse(Stanza) of
                 {ok, XmlEl} ->
-                    p1_fsm:send_event(C2sPid, {xmlstreamelement, XmlEl}),
+                    p1_fsm_old:send_event(C2sPid, {xmlstreamelement, XmlEl}),
                     {ok, "Stanza has been sent"};
                 {error, _} ->
                     {bad_stanza, "Stanza is incorrect"}
