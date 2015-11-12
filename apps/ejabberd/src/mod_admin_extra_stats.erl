@@ -60,7 +60,7 @@ commands() ->
 %%% Stats
 %%%
 
--spec stats(binary()) -> integer().
+-spec stats(binary()) -> {ok, integer()} | {wrong_command, string()}.
 stats(Name) ->
     case Name of
         <<"uptimeseconds">> ->
@@ -83,7 +83,7 @@ stats(Name) ->
     end.
 
 
--spec stats(binary(), ejabberd:server()) -> integer().
+-spec stats(binary(), ejabberd:server()) -> {ok, integer()} | {wrong_command, string()}.
 stats(Name, Host) ->
     case Name of
         <<"registeredusers">> ->

@@ -111,7 +111,9 @@ commands() ->
 %%%
 %%% Vcard
 %%%
-
+-spec get_vcard(ejabberd:user(), ejabberd:server(), any())
+                       -> {Res, string()} when
+    Res :: ok | vcard_not_found | no_value_found_in_vcard | user_does_not_exist.
 get_vcard(User, Host, Name) ->
     case ejabberd_auth:is_user_exists(User, Host) of
         true ->
@@ -120,6 +122,9 @@ get_vcard(User, Host, Name) ->
             {user_does_not_exist, io_lib:format("User ~s@~s does not exist", [User, Host])}
     end.
 
+-spec get_vcard(ejabberd:user(), ejabberd:server(), any(), any())
+               -> {Res, string()} when
+    Res :: ok | vcard_not_found | no_value_found_in_vcard | user_does_not_exist.
 get_vcard(User, Host, Name, Subname) ->
     case ejabberd_auth:is_user_exists(User, Host) of
         true ->
@@ -128,6 +133,9 @@ get_vcard(User, Host, Name, Subname) ->
             {user_does_not_exist, io_lib:format("User ~s@~s does not exist", [User, Host])}
     end.
 
+-spec get_vcard_multi(ejabberd:user(), ejabberd:server(), any(), any())
+               -> {Res, string()} when
+    Res :: ok | vcard_not_found | no_value_found_in_vcard | user_does_not_exist.
 get_vcard_multi(User, Host, Name, Subname) ->
     case ejabberd_auth:is_user_exists(User, Host) of
         true ->
@@ -136,6 +144,8 @@ get_vcard_multi(User, Host, Name, Subname) ->
             {user_does_not_exist, io_lib:format("User ~s@~s does not exist", [User, Host])}
     end.
 
+-spec set_vcard(ejabberd:user(), ejabberd:server(), [binary()],
+                binary() | [binary()]) -> {ok, string()} | {user_does_not_exist, string()}.
 set_vcard(User, Host, Name, SomeContent) ->
     case ejabberd_auth:is_user_exists(User, Host) of
         true ->
@@ -144,6 +154,8 @@ set_vcard(User, Host, Name, SomeContent) ->
             {user_does_not_exist, io_lib:format("User ~s@~s does not exist", [User, Host])}
     end.
 
+-spec set_vcard(ejabberd:user(), ejabberd:server(), [binary()], [binary()],
+                binary() | [binary()]) -> {ok, string()} | {user_does_not_exist, string()}.
 set_vcard(User, Host, Name, Subname, SomeContent) ->
     case ejabberd_auth:is_user_exists(User, Host) of
         true ->
@@ -165,7 +177,8 @@ get_module_resource(Server) ->
 
 
 -spec get_vcard_content(ejabberd:user(), ejabberd:server(), any())
-            -> [Cdata :: binary()] | none().
+            -> {Res, string()} when
+    Res :: ok | vcard_not_found | no_value_found_in_vcard.
 get_vcard_content(User, Server, Data) ->
     [{_, Module, Function, _Opts}] = ets:lookup(sm_iqtable, {?NS_VCARD, Server}),
     JID = jlib:make_jid(User, Server, list_to_binary(get_module_resource(Server))),
@@ -194,7 +207,7 @@ get_vcard([Data], A1) ->
     exml_query:subelements(A1, Data).
 
 -spec set_vcard_content(ejabberd:user(), ejabberd:server(), Data :: [binary()],
-        ContentList :: binary() | [binary()]) -> ok.
+        ContentList :: binary() | [binary()]) -> {ok, string()}.
 set_vcard_content(U, S, D, SomeContent) when is_binary(SomeContent) ->
     set_vcard_content(U, S, D, [SomeContent]);
 set_vcard_content(User, Server, Data, ContentList) ->

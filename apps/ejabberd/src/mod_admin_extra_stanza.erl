@@ -71,7 +71,8 @@ commands() ->
 
 %% @doc Send a chat message to a Jabber account.
 -spec send_message_chat(From :: binary(), To :: binary(),
-                        Body :: binary() | string()) -> 'ok'.
+                        Body :: binary() | string()) -> {Res, string()} when
+    Res :: bad_jid | ok.
 send_message_chat(From, To, Body) ->
     Packet = build_packet(message_chat, [Body]),
     send_packet_all_resources(From, To, Packet).
@@ -80,7 +81,8 @@ send_message_chat(From, To, Body) ->
 %% @doc Send a headline message to a Jabber account.
 -spec send_message_headline(From :: binary(), To :: binary(),
                             Subject:: binary() | string(),
-                            Body :: binary() | string()) -> 'ok'.
+                            Body :: binary() | string()) ->  {Res, string()} when
+    Res :: ok | bad_jid.
 send_message_headline(From, To, Subject, Body) ->
     Packet = build_packet(message_headline, [Subject, Body]),
     send_packet_all_resources(From, To, Packet).
@@ -94,7 +96,8 @@ send_message_headline(From, To, Subject, Body) ->
 %% If the user is local and is online in several resources, the packet is sent
 %%      to all its resources.
 -spec send_packet_all_resources(FromJIDStr :: binary(), ToJIDString :: binary(),
-                                jlib:xmlel()) -> 'ok'.
+                                jlib:xmlel()) -> {Res, string()} when
+    Res :: bad_jid | ok.
 send_packet_all_resources(FromJIDString, ToJIDString, Packet) ->
     FromJID = jlib:binary_to_jid(FromJIDString),
     case FromJID of
@@ -157,7 +160,8 @@ build_packet(message_headline, [Subject, Body]) ->
 
 
 -spec send_stanza_c2s(ejabberd:user(), ejabberd:server(), ejabberd:resource(),
-                      Stanza :: binary()) -> any().
+                      Stanza :: binary()) -> {Res, string()} when
+    Res :: user_does_not_exist | bad_stanza | ok.
 send_stanza_c2s(Username, Host, Resource, Stanza) ->
     C2sPid = ejabberd_sm:get_session_pid(Username, Host, Resource),
     case C2sPid of

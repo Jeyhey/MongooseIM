@@ -106,7 +106,8 @@ set_password(User, Host, Password) ->
             {error, Reason}
     end.
 
--spec check_password(ejabberd:user(), ejabberd:server(), binary()) ->  {'ok', string()}.
+-spec check_password(ejabberd:user(), ejabberd:server(), binary()) ->  {Res, string()} when
+    Res :: ok | incorrect | user_does_not_exist.
 check_password(User, Host, Password) ->
     case ejabberd_auth:is_user_exists(User, Host) of
         true ->
@@ -121,7 +122,8 @@ check_password(User, Host, Password) ->
             exist", [Password, User, Host])}
     end.
 
--spec check_account(ejabberd:user(), ejabberd:server()) -> {'ok', string()}.
+-spec check_account(ejabberd:user(), ejabberd:server()) -> {Res, string()} when
+    Res :: ok | user_does_not_exist.
 check_account(User, Host) ->
     case ejabberd_auth:is_user_exists(User, Host) of
         true ->
@@ -132,7 +134,7 @@ check_account(User, Host) ->
 
 
 -spec check_password_hash(ejabberd:user(), ejabberd:server(), Hash :: binary(),
-                         Method :: string()) -> {'error', string()} | {'ok', string()}.
+                         Method :: string()) -> {'error', string()} | {'ok', string()} | {'incorrect', string()}.
 check_password_hash(User, Host, PasswordHash, HashMethod) ->
     AccountPass = ejabberd_auth:get_password_s(User, Host),
     AccountPassHash = case HashMethod of
@@ -250,7 +252,7 @@ get_lastactivity_module(Server) ->
     end.
 
 
--spec ban_account(ejabberd:user(), ejabberd:server(), binary() | string()) -> 'ok'.
+-spec ban_account(ejabberd:user(), ejabberd:server(), binary() | string()) -> {'ok', string()} | {'error', string()}.
 ban_account(User, Host, ReasonText) ->
     Reason = mod_admin_extra_sessions:prepare_reason(ReasonText),
     kick_sessions(User, Host, Reason),

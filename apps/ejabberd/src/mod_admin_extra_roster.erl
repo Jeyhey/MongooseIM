@@ -161,7 +161,8 @@ commands() ->
                      Server :: ejabberd:server(),
                      Nick :: binary(),
                      Group :: binary() | string(),
-                     Subs :: subs()) -> 'error' | 'ok'.
+                     Subs :: subs()) -> {Res, string()} when
+    Res :: user_doest_not_exist | error | bad_subs | ok.
 add_rosteritem(LocalUser, LocalServer, User, Server, Nick, Group, Subs) ->
     case ejabberd_auth:is_user_exists(LocalUser, LocalServer) of
         true ->
@@ -216,7 +217,8 @@ do_add_rosteritem(LocalUser, LocalServer, User, Server, Nick, Group, Subs) ->
 -spec delete_rosteritem(LocalUser :: ejabberd:user(),
                         LocalServer :: ejabberd:server(),
                         User :: ejabberd:user(),
-                        Server :: ejabberd:server()) -> ok | error.
+                        Server :: ejabberd:server()) -> {Res, string()} when
+    Res :: ok | error | user_does_not_exist.
 delete_rosteritem(LocalUser, LocalServer, User, Server) ->
     case ejabberd_auth:is_user_exists(LocalUser, LocalServer) of
         true ->
